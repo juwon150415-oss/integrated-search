@@ -1,37 +1,89 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#111827">
-<title>통합 검색</title>
-<style>
-:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(145deg,#111827,#172554);color:#f8fafc;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;display:flex;justify-content:center;align-items:center;padding:22px}.app{width:min(100%,650px)}h1{font-size:clamp(30px,7vw,46px);margin:0 0 8px;letter-spacing:-1.5px}.sub{color:#cbd5e1;margin:0 0 28px}.engines{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}.engine{border:1px solid #475569;background:#1e293b;color:#e2e8f0;padding:10px 17px;border-radius:999px;font-size:15px;cursor:pointer}.engine.active{background:#2563eb;border-color:#60a5fa;color:white}.searchbox{position:relative}.row{display:flex;gap:9px;background:white;padding:8px;border-radius:18px;box-shadow:0 15px 45px #0005}.row input{flex:1;min-width:0;border:0;outline:0;padding:12px 10px;font-size:17px;color:#0f172a;background:transparent}.row button{border:0;border-radius:12px;background:#2563eb;color:white;padding:0 20px;font-size:16px;font-weight:700;cursor:pointer}.suggestions{position:absolute;z-index:5;top:calc(100% + 8px);left:0;right:0;background:#fff;color:#0f172a;border-radius:14px;overflow:hidden;box-shadow:0 12px 35px #0005}.suggestions button{display:block;width:100%;text-align:left;border:0;background:white;padding:12px 16px;font-size:15px;cursor:pointer;color:#0f172a}.suggestions button:hover,.suggestions button.selected{background:#dbeafe}.section{margin-top:28px}.sectionhead{display:flex;justify-content:space-between;align-items:center;color:#cbd5e1;font-size:14px;margin-bottom:10px}.clear{background:none;border:0;color:#93c5fd;cursor:pointer}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:#1e293b;border:1px solid #334155;border-radius:999px;padding:8px 12px;color:#e2e8f0;cursor:pointer}.hint{font-size:12px;color:#94a3b8;margin-top:28px;line-height:1.7}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="검색 엔진을 선택해 빠르게 검색하는 통합 검색 페이지">
+  <title>통합 검색</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
 </head>
-<body><main class="app">
-<h1>통합 검색</h1><p class="sub">원하는 검색 엔진을 선택하고 한 번에 검색하세요.</p>
-<div class="engines" role="group" aria-label="검색 엔진">
-<button class="engine active" data-engine="google">Google</button>
-<button class="engine" data-engine="naver">네이버</button>
-<button class="engine" data-engine="namu">나무위키</button>
-</div>
-<div class="searchbox"><form class="row" id="form"><input id="query" type="search" placeholder="검색어를 입력하세요" autocomplete="off" aria-label="검색어"><button type="submit">검색</button></form><div class="suggestions" id="suggestions" hidden></div></div>
-<section class="section"><div class="sectionhead"><span>최근 검색</span><button class="clear" id="clear">기록 삭제</button></div><div class="chips" id="history"></div></section>
-<p class="hint">↑ / ↓ : 추천어 이동 · Enter : 검색 · 추천어는 내장 단어와 최근 검색 기록을 바탕으로 표시됩니다.<br>검색 기록과 선택한 엔진은 이 브라우저에만 저장됩니다.</p>
-</main>
-<script>
-const $=s=>document.querySelector(s);
-const engines={google:q=>'https://www.google.com/search?q='+encodeURIComponent(q),naver:q=>'https://search.naver.com/search.naver?query='+encodeURIComponent(q),namu:q=>'https://namu.wiki/w/'+encodeURIComponent(q)};
-const words=['인공지능','과학','수학','코딩','파이썬','자바스크립트','HTML','물리학','우주','역사','뿌요뿌요','로블록스','삼성 인터넷','대한민국','기독교'];
-let engine=localStorage.getItem('is-engine')||'google',history=JSON.parse(localStorage.getItem('is-history')||'[]'),active=-1;
-function setEngine(e){engine=e;localStorage.setItem('is-engine',e);document.querySelectorAll('.engine').forEach(b=>b.classList.toggle('active',b.dataset.engine===e))}
-document.querySelectorAll('.engine').forEach(b=>b.addEventListener('click',()=>setEngine(b.dataset.engine)));setEngine(engine);
-function renderHistory(){$('#history').innerHTML='';history.forEach(v=>{const b=document.createElement('button');b.className='chip';b.textContent=v;b.onclick=()=>{ $('#query').value=v;search(v)};$('#history').append(b)});if(!history.length)$('#history').innerHTML='<span style="color:#94a3b8;font-size:14px">검색 기록이 없습니다.</span>'}
-function getSuggestions(v){if(!v.trim())return history.slice(0,6);const s=v.toLowerCase();return [...new Set([...history,...words].filter(x=>x.toLowerCase().includes(s)))].slice(0,7)}
-function showSuggestions(){const box=$('#suggestions'),items=getSuggestions($('#query').value);box.innerHTML='';active=-1;if(!items.length){box.hidden=true;return}items.forEach((v,i)=>{const b=document.createElement('button');b.textContent=v;b.onclick=()=>{ $('#query').value=v;search(v)};box.append(b)});box.hidden=false}
-function search(v){v=v.trim();if(!v)return;history=[v,...history.filter(x=>x!==v)].slice(0,20);localStorage.setItem('is-history',JSON.stringify(history));renderHistory();$('#suggestions').hidden=true;location.href=engines[engine](v)}
-$('#form').addEventListener('submit',e=>{e.preventDefault();search($('#query').value)});$('#query').addEventListener('input',showSuggestions);
-$('#query').addEventListener('keydown',e=>{const box=$('#suggestions'),buttons=[...box.querySelectorAll('button')];if(e.key==='ArrowDown'&&buttons.length){e.preventDefault();active=(active+1)%buttons.length;buttons.forEach((b,i)=>b.classList.toggle('selected',i===active))}else if(e.key==='ArrowUp'&&buttons.length){e.preventDefault();active=(active-1+buttons.length)%buttons.length;buttons.forEach((b,i)=>b.classList.toggle('selected',i===active))}else if(e.key==='Enter'&&active>=0&&buttons[active]){e.preventDefault();$('#query').value=buttons[active].textContent;search($('#query').value)}else if(e.key==='Escape')box.hidden=true});
-$('#clear').onclick=()=>{history=[];localStorage.removeItem('is-history');renderHistory()};document.addEventListener('click',e=>{if(!e.target.closest('.searchbox'))$('#suggestions').hidden=true});renderHistory();
-</script></body></html>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="통합 검색 홈"><span class="brand-mark">⌕</span> 통합 검색</a>
+      <button class="icon-button" id="settings-open" type="button" aria-label="검색 설정 열기" title="설정">⚙</button>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">ONE SEARCH, MANY DESTINATIONS</div>
+      <h1>무엇이든 <span>검색해 보세요.</span></h1>
+      <p class="subtitle">검색 엔진을 고르고, 원하는 정보를 빠르게 찾아보세요.</p>
+
+      <div class="engine-list" role="group" aria-label="검색 엔진 선택">
+        <button class="engine active" type="button" data-engine="google"><span class="engine-dot"></span>Google</button>
+        <button class="engine" type="button" data-engine="naver"><span class="engine-dot"></span>네이버</button>
+        <button class="engine" type="button" data-engine="namu"><span class="engine-dot"></span>나무위키</button>
+      </div>
+
+      <div class="search-wrap">
+        <form class="search-form" id="search-form" role="search">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="query" type="search" placeholder="검색어를 입력하세요" autocomplete="off" aria-label="검색어" aria-controls="suggestions" aria-expanded="false">
+          <kbd class="enter-hint">Enter ↵</kbd>
+          <button class="search-button" type="submit">검색</button>
+        </form>
+        <div class="suggestions" id="suggestions" role="listbox" aria-label="검색 추천" hidden></div>
+      </div>
+      <p class="keyboard-hint">↑ ↓ 이동 <span>·</span> Enter 선택/검색 <span>·</span> Esc 닫기</p>
+    </section>
+
+    <section class="history-section">
+      <div class="section-heading">
+        <div><span class="section-kicker">YOUR ACTIVITY</span><h2>최근 검색</h2></div>
+        <button class="text-button" id="clear-history" type="button">기록 삭제</button>
+      </div>
+      <div class="history-list" id="history-list" aria-live="polite"></div>
+    </section>
+    <footer>검색 기록과 설정은 현재 브라우저에 저장됩니다.</footer>
+  </main>
+
+  <div class="modal-backdrop" id="settings-modal" hidden>
+    <section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="settings-header">
+        <div><span class="section-kicker">PERSONALIZE</span><h2 id="settings-title">검색 설정</h2></div>
+        <button class="icon-button" id="settings-close" type="button" aria-label="설정 닫기">✕</button>
+      </div>
+      <div class="setting-group">
+        <h3>화면 테마</h3>
+        <div class="choice-row" id="theme-options">
+          <button type="button" data-theme="dark">어둡게</button>
+          <button type="button" data-theme="light">밝게</button>
+          <button type="button" data-theme="system">기기 설정</button>
+        </div>
+      </div>
+      <div class="setting-group">
+        <h3>기본 검색 엔진</h3>
+        <select id="default-engine" class="setting-select">
+          <option value="google">Google</option><option value="naver">네이버</option><option value="namu">나무위키</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <h3>검색 동작</h3>
+        <label class="switch-row"><span>새 탭에서 검색 결과 열기</span><input id="new-tab" type="checkbox"><span class="switch"></span></label>
+        <label class="switch-row"><span>자동완성 사용</span><input id="autocomplete" type="checkbox"><span class="switch"></span></label>
+        <label class="switch-row"><span>최근 검색어를 추천에 포함</span><input id="history-suggestions" type="checkbox"><span class="switch"></span></label>
+      </div>
+      <div class="setting-group">
+        <h3>추천어 표시 개수</h3>
+        <select id="suggestion-count" class="setting-select">
+          <option value="4">4개</option><option value="6">6개</option><option value="8">8개</option><option value="10">10개</option>
+        </select>
+      </div>
+      <div class="settings-footer"><button class="reset-button" id="reset-settings" type="button">설정 초기화</button><button class="save-button" id="settings-done" type="button">완료</button></div>
+    </section>
+  </div>
+</body>
+</html>
