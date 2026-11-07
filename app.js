@@ -5,8 +5,7 @@ const KEYS={settings:"is-settings-v2",history:"is-history-v2"};
 const defaults={theme:"dark",engine:"google",newTab:false,autocomplete:true,historySuggestions:true,suggestionCount:6};
 const endpoints={google:q=>"https://www.google.com/search?q="+encodeURIComponent(q),naver:q=>"https://search.naver.com/search.naver?query="+encodeURIComponent(q),namu:q=>"https://namu.wiki/w/"+encodeURIComponent(q)};
 const safeRead=(key,fallback)=>{try{const v=JSON.parse(localStorage.getItem(key));return v??fallback}catch{return fallback}};
-let oldEngine=localStorage.getItem("is-engine");
-let oldHistory=safeRead("is-history",[]);
+let oldEngine=localStorage.getItem("is-engine"),oldHistory=safeRead("is-history",[]);
 let settings={...defaults,...safeRead(KEYS.settings,{})};
 if(!localStorage.getItem(KEYS.settings)&&["google","naver","namu"].includes(oldEngine))settings.engine=oldEngine;
 let history=safeRead(KEYS.history,oldHistory);if(!Array.isArray(history))history=[];
@@ -14,14 +13,48 @@ history=history.filter(x=>typeof x==="string").slice(0,30);
 let activeIndex=-1,currentItems=[];
 const query=$("#query"),suggestions=$("#suggestions");
 const saveSettings=()=>localStorage.setItem(KEYS.settings,JSON.stringify(settings));
+const normalize=s=>String(s).toLocaleLowerCase().replace(/[\\s\\p{P}\\p{S}]/gu,"");
+function initials(s){return [...String(s)].map(ch=>{const n=ch.charCodeAt(0)-44032;return n>=0&&n<=11171?String.fromCharCode(4352+Math.floor(n/588)):ch}).join("")}
 function applyTheme(){const theme=settings.theme==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):settings.theme;document.documentElement.dataset.theme=theme;document.querySelector('meta[name="theme-color"]').content=theme==="dark"?"#0b1020":"#f4f7fc"}
 function setEngine(engine){settings.engine=engine;saveSettings();document.querySelectorAll(".engine").forEach(b=>b.classList.toggle("active",b.dataset.engine===engine))}
 function renderHistory(){const root=$("#history-list");root.replaceChildren();if(!history.length){const p=document.createElement("span");p.className="empty-history";p.textContent="아직 검색 기록이 없어요.";root.append(p);return}history.slice(0,12).forEach(term=>{const b=document.createElement("button");b.type="button";b.className="history-chip";b.textContent=term;b.addEventListener("click",()=>runSearch(term));root.append(b)})}
-function rankSuggestions(raw){const q=raw.trim().toLocaleLowerCase();if(!q)return settings.historySuggestions?history.slice(0,settings.suggestionCount).map(term=>({term,type:"최근 검색"})):[];const found=[];const seen=new Set();const add=(term,type,score)=>{const key=term.toLocaleLowerCase();if(!seen.has(key)){seen.add(key);found.push({term,type,score})}};
-if(settings.historySuggestions)history.forEach(term=>{const t=term.toLocaleLowerCase();if(t.startsWith(q))add(term,"최근 검색",0);else if(t.includes(q))add(term,"최근 검색",2)});
-(window.SEARCH_DATA||[]).forEach(item=>{const term=item.term.toLocaleLowerCase();const aliases=(item.aliases||[]).map(x=>x.toLocaleLowerCase());if(term.startsWith(q))add(item.term,item.category,1);else if(aliases.some(x=>x===q))add(item.term,item.category,2);else if(term.includes(q)||aliases.some(x=>x.includes(q)))add(item.term,item.category,3)});
-return found.sort((a,b)=>a.score-b.score).slice(0,settings.suggestionCount)}
-function renderSuggestions(){if(!settings.autocomplete){hideSuggestions();return}const items=rankSuggestions(query.value);suggestions.replaceChildren();activeIndex=-1;currentItems=items;if(!items.length){hideSuggestions();return}const title=document.createElement("div");title.className="suggestion-heading";title.textContent=query.value.trim()?"추천 검색어":"최근 검색어";suggestions.append(title);items.forEach((item,i)=>{const b=document.createElement("button");b.type="button";b.className="suggestion-item";b.role="option";b.setAttribute("aria-selected","false");const icon=document.createElement("span");icon.className="suggestion-symbol";icon.textContent=item.type==="최근 검색"?"◷":"⌕";const label=document.createElement("span");label.className="suggestion-label";label.textContent=item.term;const type=document.createElement("span");type.className="suggestion-type";type.textContent=item.type;b.append(icon,label,type);b.addEventListener("mousedown",e=>e.preventDefault());b.addEventListener("click",()=>runSearch(item.term));suggestions.append(b)});suggestions.hidden=false;query.setAttribute("aria-expanded","true")}
+function rankSuggestions(raw){
+ const q=normalize(raw.trim());if(!q)return settings.historySuggestions?history.slice(0,settings.suggestionCount).map(term=>({term,type:"최근 검색",reason:"다시 검색"})):[];
+ const found=[],seen=new Set();
+ const add=(term,category,score,reason)=>{const key=normalize(term);if(!key||seen.has(key))return;seen.add(key);found.push({term,type:category,score,reason})};
+ if(settings.historySuggestions)history.forEach(term=>{const t=normalize(term);if(t===q)add(term,"최근 검색",-2,"완전히 일치");else if(t.startsWith(q))add(term,"최근 검색",0,"검색어 앞부분");else if(t.includes(q))add(term,"최근 검색",5,"검색어 포함");else if(initials(term).toLowerCase().startsWith(q))add(term,"최근 검색",7,"초성 일치")});
+ (window.SEARCH_DATA||[]).forEach(item=>{
+  const term=normalize(item.term),als=(item.aliases||[]).map(normalize);
+  if(term===q)add(item.term,item.category,-1,"정확히 일치");
+  else if(term.startsWith(q))add(item.term,item.category,1,"앞부분 일치");
+  else if(als.some(x=>x===q))add(item.term,item.category,2,"별칭 일치");
+  else if(als.some(x=>x.startsWith(q)))add(item.term,item.category,3,"별칭으로 찾음");
+  else if(term.includes(q))add(item.term,item.category,4,"중간 글자 일치");
+  else if(als.some(x=>x.includes(q)))add(item.term,item.category,5,"관련어 일치");
+  else if(initials(item.term).toLowerCase().startsWith(q))add(item.term,item.category,6,"초성 일치");
+  else if(als.some(x=>initials(x).toLowerCase().startsWith(q)))add(item.term,item.category,7,"별칭 초성 일치");
+ });
+ return found.sort((a,b)=>a.score-b.score||a.term.localeCompare(b.term,"ko")).slice(0,settings.suggestionCount)
+}
+function renderSuggestions(){
+ if(!settings.autocomplete){hideSuggestions();return}
+ const items=rankSuggestions(query.value);suggestions.replaceChildren();activeIndex=-1;currentItems=items;
+ if(!items.length){hideSuggestions();return}
+ const title=document.createElement("div");title.className="suggestion-heading";title.textContent=query.value.trim()?"검색 추천":"최근 검색어";suggestions.append(title);
+ items.forEach((item,i)=>{
+  const b=document.createElement("button");b.type="button";b.className="suggestion-item";b.setAttribute("role","option");b.setAttribute("aria-selected","false");
+  const icon=document.createElement("span");icon.className="suggestion-symbol";icon.textContent=item.type==="최근 검색"?"◷":"⌕";
+  const body=document.createElement("span");body.className="suggestion-body";
+  const label=document.createElement("span");label.className="suggestion-label";label.textContent=item.term;
+  const meta=document.createElement("span");meta.className="suggestion-meta";
+  const category=document.createElement("span");category.className="suggestion-type";category.textContent=item.type;
+  const reason=document.createElement("span");reason.className="suggestion-reason";reason.textContent=item.reason;
+  meta.append(category,reason);body.append(label,meta);
+  const arrow=document.createElement("span");arrow.className="suggestion-arrow";arrow.textContent="↵";
+  b.append(icon,body,arrow);b.addEventListener("mousedown",e=>e.preventDefault());b.addEventListener("click",()=>runSearch(item.term));suggestions.append(b)
+ });
+ suggestions.hidden=false;query.setAttribute("aria-expanded","true")
+}
 function hideSuggestions(){suggestions.hidden=true;query.setAttribute("aria-expanded","false");activeIndex=-1}
 function moveSelection(delta){const buttons=[...suggestions.querySelectorAll(".suggestion-item")];if(!buttons.length)return;activeIndex=(activeIndex+delta+buttons.length)%buttons.length;buttons.forEach((b,i)=>{b.classList.toggle("selected",i===activeIndex);b.setAttribute("aria-selected",String(i===activeIndex))});query.value=currentItems[activeIndex].term}
 function runSearch(value){const term=String(value||"").trim();if(!term){query.focus();return}history=[term,...history.filter(x=>x!==term)].slice(0,30);localStorage.setItem(KEYS.history,JSON.stringify(history));renderHistory();hideSuggestions();const url=endpoints[settings.engine]||endpoints.google;if(settings.newTab)window.open(url(term),"_blank","noopener,noreferrer");else window.location.href=url(term)}
