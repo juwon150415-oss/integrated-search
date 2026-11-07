@@ -3,9 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#111827">
-  <meta name="description" content="검색 엔진을 선택해 빠르게 검색하는 통합 검색 페이지">
-  <title>통합 검색</title>
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="여러 검색 엔진과 실시간 자동완성을 한곳에서 이용하는 통합 검색">
+  <title>통합 검색 | One Search</title>
+  <link rel="preconnect" href="https://suggestqueries.google.com">
+  <link rel="preconnect" href="https://duckduckgo.com">
   <link rel="stylesheet" href="styles.css">
   <script src="data.js" defer></script>
   <script src="app.js" defer></script>
@@ -13,60 +15,78 @@
 <body>
   <main class="app">
     <header class="topbar">
-      <a class="brand" href="./" aria-label="통합 검색 홈"><span class="brand-mark">⌕</span> 통합 검색</a>
-      <button class="icon-button" id="settings-open" type="button" aria-label="검색 설정 열기" title="설정">⚙</button>
+      <a class="brand" href="./" aria-label="통합 검색 홈"><span class="brand-mark">⌕</span><span>통합 검색</span><span class="brand-badge">BETA</span></a>
+      <button class="icon-button" id="settings-open" type="button" aria-label="검색 설정 열기" title="검색 설정">⚙</button>
     </header>
 
     <section class="hero">
-      <div class="eyebrow">ONE SEARCH, MANY DESTINATIONS</div>
-      <h1>무엇이든 <span>검색해 보세요.</span></h1>
-      <p class="subtitle">검색 엔진을 고르고, 원하는 정보를 빠르게 찾아보세요.</p>
+      <div class="eyebrow">ONE SEARCH · MANY DESTINATIONS</div>
+      <h1>검색의 시작을<br><span>한곳에서.</span></h1>
+      <p class="subtitle">검색 방식을 선택하고 원하는 정보를 빠르게 찾아보세요.</p>
 
-      <div class="engine-list" role="group" aria-label="검색 엔진 선택">
-        <button class="engine active" type="button" data-engine="google"><span class="engine-dot"></span>Google</button>
-        <button class="engine" type="button" data-engine="naver"><span class="engine-dot"></span>네이버</button>
-        <button class="engine" type="button" data-engine="namu"><span class="engine-dot"></span>나무위키</button>
-        <button class="engine" type="button" data-engine="chatgpt"><span class="engine-dot"></span>ChatGPT</button>
-      </div>
-
-      <div class="search-wrap">
-        <form class="search-form" id="search-form" role="search">
-          <span class="search-icon" aria-hidden="true">⌕</span>
-          <input id="query" type="search" placeholder="검색어를 입력하세요" autocomplete="off" aria-label="검색어" aria-controls="suggestions" aria-expanded="false">
-          <kbd class="enter-hint">Enter ↵</kbd>
-          <button class="search-button" type="submit">검색</button>
-        </form>
-        <div class="suggestions" id="suggestions" role="listbox" aria-label="검색 추천" hidden></div>
-      </div>
-      <p class="keyboard-hint">↑ ↓ 이동 <span>·</span> Enter 선택/검색 <span>·</span> Esc 닫기</p>
+      <section class="search-card" aria-label="통합 검색">
+        <label class="engine-label" for="engine-select">검색 방법</label>
+        <div class="engine-select-wrap">
+          <span class="engine-select-icon" aria-hidden="true">◎</span>
+          <select id="engine-select" class="engine-select" aria-label="검색 방법 선택">
+            <option value="google">Google 검색</option>
+            <option value="naver">네이버 검색</option>
+            <option value="namu">나무위키 검색</option>
+            <option value="chatgpt">ChatGPT 질문</option>
+          </select>
+          <span class="select-chevron" aria-hidden="true">⌄</span>
+        </div>
+        <div class="search-wrap">
+          <form class="search-form" id="search-form" role="search">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input id="query" type="search" placeholder="무엇이 궁금하신가요?" autocomplete="off" spellcheck="false" aria-label="검색어" aria-controls="suggestions" aria-expanded="false">
+            <button class="clear-input" id="clear-query" type="button" aria-label="검색어 지우기" hidden>×</button>
+            <kbd class="enter-hint">Enter ↵</kbd>
+            <button class="search-button" type="submit">검색 <span>→</span></button>
+          </form>
+          <div class="suggestions" id="suggestions" role="listbox" aria-label="자동완성 추천" hidden></div>
+          <div class="autocomplete-status" id="autocomplete-status" aria-live="polite"></div>
+        </div>
+        <p class="keyboard-hint">↑ ↓ 추천어 이동 <span>·</span> Enter 검색 <span>·</span> Esc 닫기</p>
+      </section>
+      <div class="feature-points"><span>✦ 실시간 자동완성</span><span>◷ 최근 검색 저장</span><span>⌘ 여러 검색 서비스</span></div>
     </section>
 
     <section class="history-section">
       <div class="section-heading">
         <div><span class="section-kicker">YOUR ACTIVITY</span><h2>최근 검색</h2></div>
-        <button class="text-button" id="clear-history" type="button">기록 삭제</button>
+        <button class="text-button" id="clear-history" type="button">전체 삭제</button>
       </div>
       <div class="history-list" id="history-list" aria-live="polite"></div>
     </section>
+
     <details class="help-section">
-      <summary>도움말 · 유명 사이트 검색 링크</summary>
-      <p class="help-description">검색어를 입력한 뒤 사이트를 누르면 해당 사이트에서 바로 검색해요.</p>
-      <div class="help-links">
+      <summary><span>도움말</span><span class="help-summary-sub">자주 쓰는 사이트 바로 검색</span></summary>
+      <p class="help-description">검색창에 검색어를 입력한 다음 원하는 사이트를 선택하세요.</p>
+      <div class="help-category"><h3>검색·지식</h3><div class="help-links">
         <a href="#" data-help-url="https://www.google.com/search?q={query}">Google</a>
         <a href="#" data-help-url="https://search.naver.com/search.naver?query={query}">네이버</a>
         <a href="#" data-help-url="https://search.daum.net/search?q={query}">다음</a>
         <a href="#" data-help-url="https://www.bing.com/search?q={query}">Bing</a>
         <a href="#" data-help-url="https://duckduckgo.com/?q={query}">DuckDuckGo</a>
-        <a href="#" data-help-url="https://chatgpt.com/?q={query}">ChatGPT</a>
-        <a href="#" data-help-url="https://namu.wiki/w/{query}">나무위키</a>
         <a href="#" data-help-url="https://ko.wikipedia.org/w/index.php?search={query}">위키백과</a>
+        <a href="#" data-help-url="https://namu.wiki/w/{query}">나무위키</a>
+        <a href="#" data-help-url="https://chatgpt.com/?q={query}">ChatGPT</a>
+      </div></div>
+      <div class="help-category"><h3>영상·커뮤니티</h3><div class="help-links">
         <a href="#" data-help-url="https://www.youtube.com/results?search_query={query}">YouTube</a>
-        <a href="#" data-help-url="https://github.com/search?q={query}">GitHub</a>
         <a href="#" data-help-url="https://www.reddit.com/search/?q={query}">Reddit</a>
+        <a href="#" data-help-url="https://www.twitch.tv/search?term={query}">Twitch</a>
+      </div></div>
+      <div class="help-category"><h3>개발·게임</h3><div class="help-links">
+        <a href="#" data-help-url="https://github.com/search?q={query}">GitHub</a>
+        <a href="#" data-help-url="https://stackoverflow.com/search?q={query}">Stack Overflow</a>
+        <a href="#" data-help-url="https://developer.mozilla.org/ko/search?q={query}">MDN</a>
         <a href="#" data-help-url="https://store.steampowered.com/search/?term={query}">Steam</a>
-      </div>
+      </div></div>
     </details>
-    <footer>검색 기록과 설정은 현재 브라우저에 저장됩니다.</footer>
+
+    <footer><span>통합 검색</span><span>검색 기록과 설정은 이 브라우저에 저장됩니다.</span></footer>
   </main>
 
   <div class="modal-backdrop" id="settings-modal" hidden>
@@ -84,16 +104,20 @@
         </div>
       </div>
       <div class="setting-group">
-        <h3>기본 검색 엔진</h3>
+        <h3>기본 검색 방법</h3>
         <select id="default-engine" class="setting-select">
           <option value="google">Google</option><option value="naver">네이버</option><option value="namu">나무위키</option><option value="chatgpt">ChatGPT</option>
         </select>
       </div>
       <div class="setting-group">
+        <h3>자동완성</h3>
+        <label class="switch-row"><span><strong>실시간 검색어 자동완성</strong><small>Google 추천어 API와 보조 추천 API 사용</small></span><input id="remote-autocomplete" type="checkbox"><span class="switch"></span></label>
+        <label class="switch-row"><span><strong>자동완성 사용</strong><small>검색 중 추천 목록 표시</small></span><input id="autocomplete" type="checkbox"><span class="switch"></span></label>
+        <label class="switch-row"><span><strong>최근 검색어 포함</strong><small>이전에 검색한 단어도 추천</small></span><input id="history-suggestions" type="checkbox"><span class="switch"></span></label>
+      </div>
+      <div class="setting-group">
         <h3>검색 동작</h3>
-        <label class="switch-row"><span>새 탭에서 검색 결과 열기</span><input id="new-tab" type="checkbox"><span class="switch"></span></label>
-        <label class="switch-row"><span>자동완성 사용</span><input id="autocomplete" type="checkbox"><span class="switch"></span></label>
-        <label class="switch-row"><span>최근 검색어를 추천에 포함</span><input id="history-suggestions" type="checkbox"><span class="switch"></span></label>
+        <label class="switch-row"><span><strong>새 탭에서 검색 결과 열기</strong><small>현재 페이지를 유지합니다.</small></span><input id="new-tab" type="checkbox"><span class="switch"></span></label>
       </div>
       <div class="setting-group">
         <h3>추천어 표시 개수</h3>
@@ -101,7 +125,8 @@
           <option value="4">4개</option><option value="6">6개</option><option value="8">8개</option><option value="10">10개</option>
         </select>
       </div>
-      <div class="settings-footer"><button class="reset-button" id="reset-settings" type="button">설정 초기화</button><button class="save-button" id="settings-done" type="button">완료</button></div>
+      <div class="privacy-note">실시간 자동완성은 검색어 일부를 외부 추천 서비스에 전송해 추천어를 가져옵니다. 끄면 기기에 저장된 추천 데이터만 사용합니다.</div>
+      <div class="settings-footer"><button class="reset-button" id="reset-settings" type="button">초기화</button><button class="save-button" id="settings-done" type="button">저장</button></div>
     </section>
   </div>
 </body>
