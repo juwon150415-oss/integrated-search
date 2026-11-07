@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>통합 검색</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(145deg,#111827,#172554);color:#f8fafc;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;display:flex;justify-content:center;align-items:center;padding:22px}.app{width:min(100%,650px)}h1{font-size:clamp(30px,7vw,46px);margin:0 0 8px;letter-spacing:-1.5px}.sub{color:#cbd5e1;margin:0 0 28px}.engines{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}.engine{border:1px solid #475569;background:#1e293b;color:#e2e8f0;padding:10px 17px;border-radius:999px;font-size:15px;cursor:pointer}.engine.active{background:#2563eb;border-color:#60a5fa;color:white}.searchbox{position:relative}.row{display:flex;gap:9px;background:white;padding:8px;border-radius:18px;box-shadow:0 15px 45px #0005}.row input{flex:1;min-width:0;border:0;outline:0;padding:12px 10px;font-size:17px;color:#0f172a;background:transparent}.row button{border:0;border-radius:12px;background:#2563eb;color:white;padding:0 20px;font-size:16px;font-weight:700;cursor:pointer}.suggestions{position:absolute;z-index:5;top:calc(100% + 8px);left:0;right:0;background:#fff;color:#0f172a;border-radius:14px;overflow:hidden;box-shadow:0 12px 35px #0005}.suggestions button{display:block;width:100%;text-align:left;border:0;background:white;padding:12px 16px;font-size:15px;cursor:pointer;color:#0f172a}.suggestions button:hover,.suggestions button.selected{background:#dbeafe}.section{margin-top:28px}.sectionhead{display:flex;justify-content:space-between;align-items:center;color:#cbd5e1;font-size:14px;margin-bottom:10px}.clear{background:none;border:0;color:#93c5fd;cursor:pointer}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{background:#1e293b;border:1px solid #334155;border-radius:999px;padding:8px 12px;color:#e2e8f0;cursor:pointer}.hint{font-size:12px;color:#94a3b8;margin-top:28px;line-height:1.7}
+</style>
+</head>
+<body><main class="app">
+<h1>통합 검색</h1><p class="sub">원하는 검색 엔진을 선택하고 한 번에 검색하세요.</p>
+<div class="engines" role="group" aria-label="검색 엔진">
+<button class="engine active" data-engine="google">Google</button>
+<button class="engine" data-engine="naver">네이버</button>
+<button class="engine" data-engine="namu">나무위키</button>
+</div>
+<div class="searchbox"><form class="row" id="form"><input id="query" type="search" placeholder="검색어를 입력하세요" autocomplete="off" aria-label="검색어"><button type="submit">검색</button></form><div class="suggestions" id="suggestions" hidden></div></div>
+<section class="section"><div class="sectionhead"><span>최근 검색</span><button class="clear" id="clear">기록 삭제</button></div><div class="chips" id="history"></div></section>
+<p class="hint">↑ / ↓ : 추천어 이동 · Enter : 검색 · 추천어는 내장 단어와 최근 검색 기록을 바탕으로 표시됩니다.<br>검색 기록과 선택한 엔진은 이 브라우저에만 저장됩니다.</p>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const engines={google:q=>'https://www.google.com/search?q='+encodeURIComponent(q),naver:q=>'https://search.naver.com/search.naver?query='+encodeURIComponent(q),namu:q=>'https://namu.wiki/w/'+encodeURIComponent(q)};
+const words=['인공지능','과학','수학','코딩','파이썬','자바스크립트','HTML','물리학','우주','역사','뿌요뿌요','로블록스','삼성 인터넷','대한민국','기독교'];
+let engine=localStorage.getItem('is-engine')||'google',history=JSON.parse(localStorage.getItem('is-history')||'[]'),active=-1;
+function setEngine(e){engine=e;localStorage.setItem('is-engine',e);document.querySelectorAll('.engine').forEach(b=>b.classList.toggle('active',b.dataset.engine===e))}
+document.querySelectorAll('.engine').forEach(b=>b.addEventListener('click',()=>setEngine(b.dataset.engine)));setEngine(engine);
+function renderHistory(){$('#history').innerHTML='';history.forEach(v=>{const b=document.createElement('button');b.className='chip';b.textContent=v;b.onclick=()=>{ $('#query').value=v;search(v)};$('#history').append(b)});if(!history.length)$('#history').innerHTML='<span style="color:#94a3b8;font-size:14px">검색 기록이 없습니다.</span>'}
+function getSuggestions(v){if(!v.trim())return history.slice(0,6);const s=v.toLowerCase();return [...new Set([...history,...words].filter(x=>x.toLowerCase().includes(s)))].slice(0,7)}
+function showSuggestions(){const box=$('#suggestions'),items=getSuggestions($('#query').value);box.innerHTML='';active=-1;if(!items.length){box.hidden=true;return}items.forEach((v,i)=>{const b=document.createElement('button');b.textContent=v;b.onclick=()=>{ $('#query').value=v;search(v)};box.append(b)});box.hidden=false}
+function search(v){v=v.trim();if(!v)return;history=[v,...history.filter(x=>x!==v)].slice(0,20);localStorage.setItem('is-history',JSON.stringify(history));renderHistory();$('#suggestions').hidden=true;location.href=engines[engine](v)}
+$('#form').addEventListener('submit',e=>{e.preventDefault();search($('#query').value)});$('#query').addEventListener('input',showSuggestions);
+$('#query').addEventListener('keydown',e=>{const box=$('#suggestions'),buttons=[...box.querySelectorAll('button')];if(e.key==='ArrowDown'&&buttons.length){e.preventDefault();active=(active+1)%buttons.length;buttons.forEach((b,i)=>b.classList.toggle('selected',i===active))}else if(e.key==='ArrowUp'&&buttons.length){e.preventDefault();active=(active-1+buttons.length)%buttons.length;buttons.forEach((b,i)=>b.classList.toggle('selected',i===active))}else if(e.key==='Enter'&&active>=0&&buttons[active]){e.preventDefault();$('#query').value=buttons[active].textContent;search($('#query').value)}else if(e.key==='Escape')box.hidden=true});
+$('#clear').onclick=()=>{history=[];localStorage.removeItem('is-history');renderHistory()};document.addEventListener('click',e=>{if(!e.target.closest('.searchbox'))$('#suggestions').hidden=true});renderHistory();
+</script></body></html>
