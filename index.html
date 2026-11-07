@@ -26,7 +26,7 @@
         <button class="engine active" type="button" data-engine="google"><span class="engine-dot"></span>Google</button>
         <button class="engine" type="button" data-engine="naver"><span class="engine-dot"></span>네이버</button>
         <button class="engine" type="button" data-engine="namu"><span class="engine-dot"></span>나무위키</button>
-        <button class="engine" type="button" data-engine="custom"><span class="engine-dot"></span><span id="custom-engine-label">내 검색</span></button>
+        <button class="engine" type="button" data-engine="chatgpt"><span class="engine-dot"></span>ChatGPT</button>
       </div>
 
       <div class="search-wrap">
@@ -48,6 +48,24 @@
       </div>
       <div class="history-list" id="history-list" aria-live="polite"></div>
     </section>
+    <details class="help-section">
+      <summary>도움말 · 유명 사이트 검색 링크</summary>
+      <p class="help-description">검색어를 입력한 뒤 사이트를 누르면 해당 사이트에서 바로 검색해요.</p>
+      <div class="help-links">
+        <a href="#" data-help-url="https://www.google.com/search?q={query}">Google</a>
+        <a href="#" data-help-url="https://search.naver.com/search.naver?query={query}">네이버</a>
+        <a href="#" data-help-url="https://search.daum.net/search?q={query}">다음</a>
+        <a href="#" data-help-url="https://www.bing.com/search?q={query}">Bing</a>
+        <a href="#" data-help-url="https://duckduckgo.com/?q={query}">DuckDuckGo</a>
+        <a href="#" data-help-url="https://chatgpt.com/?q={query}">ChatGPT</a>
+        <a href="#" data-help-url="https://namu.wiki/w/{query}">나무위키</a>
+        <a href="#" data-help-url="https://ko.wikipedia.org/w/index.php?search={query}">위키백과</a>
+        <a href="#" data-help-url="https://www.youtube.com/results?search_query={query}">YouTube</a>
+        <a href="#" data-help-url="https://github.com/search?q={query}">GitHub</a>
+        <a href="#" data-help-url="https://www.reddit.com/search/?q={query}">Reddit</a>
+        <a href="#" data-help-url="https://store.steampowered.com/search/?term={query}">Steam</a>
+      </div>
+    </details>
     <footer>검색 기록과 설정은 현재 브라우저에 저장됩니다.</footer>
   </main>
 
@@ -68,16 +86,8 @@
       <div class="setting-group">
         <h3>기본 검색 엔진</h3>
         <select id="default-engine" class="setting-select">
-          <option value="google">Google</option><option value="naver">네이버</option><option value="namu">나무위키</option><option value="custom">사용자 지정 검색</option>
+          <option value="google">Google</option><option value="naver">네이버</option><option value="namu">나무위키</option><option value="chatgpt">ChatGPT</option>
         </select>
-      </div>
-      <div class="setting-group">
-        <h3>사용자 지정 검색 링크</h3>
-        <label class="field-label" for="custom-name">검색 버튼 이름</label>
-        <input id="custom-name" class="setting-input" type="text" maxlength="16" placeholder="예: 위키백과">
-        <label class="field-label" for="custom-url">검색 URL 템플릿</label>
-        <input id="custom-url" class="setting-input" type="url" inputmode="url" placeholder="https://example.com/search?q={query}">
-        <p class="setting-help">검색어가 들어갈 위치에 <code>{query}</code> 또는 <code>%s</code>를 넣으세요. 예: https://www.google.com/search?q={query}</p>
       </div>
       <div class="setting-group">
         <h3>검색 동작</h3>
