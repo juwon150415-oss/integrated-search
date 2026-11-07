@@ -6,3 +6,9 @@ button,input,select{font:inherit}.app{width:min(100%,760px);margin:0 auto}.topba
 @media(max-width:480px){body{padding:15px 14px 28px}.hero{padding-top:55px}.search-form{gap:6px;padding-left:12px}.enter-hint{display:none}.search-button{padding:12px 14px}.settings-panel{padding:18px}.choice-row button{font-size:12px}}
 
 .field-label{display:block;margin:12px 0 7px;font-size:12px;color:var(--muted);font-weight:650}.setting-input{display:block;width:100%;border:1px solid var(--border);border-radius:10px;background:var(--panel2);color:var(--text);padding:12px;outline:none}.setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}.setting-help{font-size:11px;line-height:1.6;color:var(--muted);margin:9px 0 0}.setting-help code{color:var(--accent);background:var(--accent-soft);padding:2px 5px;border-radius:4px;}
+.help-section{margin-top:28px;border:1px solid var(--border);border-radius:15px;background:var(--panel);padding:15px 17px}
+.help-section summary{cursor:pointer;font-weight:750;font-size:14px;color:var(--text)}
+.help-description{font-size:12px;color:var(--muted);margin:12px 0}
+.help-links{display:flex;flex-wrap:wrap;gap:8px}
+.help-links a{display:inline-block;text-decoration:none;border:1px solid var(--border);border-radius:999px;padding:8px 12px;color:var(--text);background:var(--panel2);font-size:12px}
+.help-links a:hover{border-color:var(--accent);color:var(--accent)}
