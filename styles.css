@@ -120,3 +120,57 @@ footer{display:none}
  .history-section{padding-top:7px}
  .help-section{padding-top:6px}
 }
+
+
+/* Ultra-compact mode: prioritize the search field; no page-level scrolling. */
+html{height:100%;overflow:hidden}
+body{position:fixed;inset:0;width:100%;height:100%;height:100dvh;min-height:0;overflow:hidden;padding:6px 12px}
+.app{width:min(100%,680px);height:100%;min-height:0;margin:0 auto;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:30px;min-height:30px}
+.brand{font-size:14px}
+.icon-button{width:32px;height:32px;font-size:15px}
+.hero{flex:none;padding:12px 0 8px}
+.eyebrow{display:none!important}
+h1{font-size:25px;line-height:1.05;letter-spacing:-1px;margin:0 0 4px}
+h1 br{display:none}
+.subtitle{display:none!important}
+.search-card{width:100%;margin:8px auto 0;padding:0}
+.engine-label{font-size:10px;margin:0 0 4px 1px}
+.engine-select-wrap{margin:0 0 6px}
+.engine-select{height:35px;min-height:35px;padding-top:0;padding-bottom:0;font-size:12px}
+.search-form{min-height:44px;padding:3px 5px 3px 9px;gap:4px;border-radius:7px}
+.search-icon{font-size:19px}
+.search-form input{font-size:14px;padding:7px 1px}
+.search-button{font-size:11px;padding:9px 10px}
+.clear-input{font-size:18px}
+.enter-hint{display:none}
+.keyboard-hint{display:none!important}
+.autocomplete-status{min-height:11px;padding-top:2px;font-size:9px}
+.feature-points{display:none!important}
+.history-section{flex:none;margin:0;padding-top:5px;border-top:1px solid var(--border)}
+.section-heading{margin:0 0 5px}
+.section-heading h2{font-size:13px;margin:0}
+.text-button{font-size:10px;padding:2px}
+.history-list{min-height:0;max-height:27px;overflow:hidden;display:flex;flex-wrap:nowrap;gap:5px}
+.history-chip{flex:none;max-width:38%;padding:5px 8px;font-size:10px}
+.empty-history{font-size:10px;padding:3px 0}
+.help-section{display:none!important}
+footer{display:none!important}
+.suggestions{max-height:34dvh;border-radius:7px;padding:4px}
+.suggestion-heading{padding:5px 7px;font-size:10px}
+.suggestion-item{padding:7px;border-radius:5px}
+.suggestion-label{font-size:12px}
+.modal-backdrop{overflow:auto}
+.settings-panel{max-height:calc(100dvh - 20px);padding:15px}
+@media(max-height:560px){
+ body{padding:4px 10px}
+ .topbar{height:26px;min-height:26px}
+ .icon-button{width:28px;height:28px}
+ .hero{padding:6px 0 5px}
+ h1{display:none}
+ .search-card{margin-top:3px}
+ .engine-select{height:31px;min-height:31px}
+ .search-form{min-height:40px}
+ .history-section{padding-top:4px}
+ .history-list{max-height:23px}
+}
