@@ -61,3 +61,62 @@ h1 span{color:var(--text)}
   .history-section{margin-top:8px}
 }
 
+
+
+/* No-scroll layout: keep the search controls and recent activity in the first viewport. */
+html,body{height:100%;min-height:0}
+body{height:100svh;min-height:0;overflow:hidden;padding:12px 18px}
+.app{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:42px;min-height:42px}
+.hero{flex:none;padding:clamp(18px,4.2vh,42px) 0 16px}
+.eyebrow{display:none}
+h1{font-size:clamp(30px,5.2vw,43px);line-height:1.08;letter-spacing:-1.7px;margin:0 0 9px}
+.subtitle{font-size:12px}
+.search-card{margin:18px auto 0;padding:0}
+.engine-label{margin-bottom:6px}
+.engine-select-wrap{margin-bottom:8px}
+.engine-select{height:40px}
+.search-form{padding-top:4px;padding-bottom:4px}
+.search-form input{padding-top:9px;padding-bottom:9px}
+.search-button{padding:10px 14px}
+.keyboard-hint{margin-top:7px;font-size:10px}
+.feature-points{display:none}
+.history-section{flex:none;margin:0;padding-top:12px}
+.section-heading{margin-bottom:8px}
+.section-heading h2{font-size:16px}
+.section-kicker{display:none}
+.history-list{max-height:42px;overflow:hidden;flex-wrap:nowrap;gap:6px}
+.history-chip{flex:none;max-width:42%;padding:7px 9px;font-size:11px}
+.empty-history{padding:5px 0}
+.help-section{flex:none;margin-top:auto;padding:10px 0 0;border-bottom:0}
+.help-section summary{font-size:12px}
+.help-summary-sub{font-size:10px}
+.help-section[open]{max-height:35vh;overflow:auto}
+footer{display:none}
+.suggestions{max-height:min(38vh,300px)}
+.modal-backdrop{overflow:auto}
+.settings-panel{max-height:calc(100svh - 32px)}
+@media(max-width:520px){
+ body{padding:10px 14px}
+ .topbar{height:38px;min-height:38px}
+ .hero{padding:clamp(16px,3.5vh,30px) 0 12px}
+ h1{font-size:32px;margin-bottom:7px}
+ .subtitle{font-size:11px}
+ .search-card{margin-top:14px}
+ .engine-select{height:38px}
+ .search-form input{font-size:14px}
+ .search-button{padding:10px 11px}
+ .history-section{padding-top:9px}
+ .help-section{padding-top:8px}
+}
+@media(max-height:650px){
+ body{padding-top:7px;padding-bottom:7px}
+ .topbar{height:32px;min-height:32px}
+ .hero{padding:10px 0 8px}
+ h1{font-size:27px;line-height:1.02;margin-bottom:5px}
+ .subtitle{display:none}
+ .search-card{margin-top:10px}
+ .keyboard-hint{display:none}
+ .history-section{padding-top:7px}
+ .help-section{padding-top:6px}
+}
