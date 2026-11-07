@@ -180,3 +180,6 @@ footer{display:none!important}
 h1{display:block!important;font-size:17px!important;line-height:1.1;letter-spacing:-.4px;margin:0 0 5px!important;font-weight:650}
 h1 br{display:none}
 @media(max-height:560px){h1{display:block!important;font-size:15px!important;margin-bottom:3px!important}}
+
+/* Minimal personal-use screen: no hero heading or explanatory copy. */
+.hero{padding:8px 0 5px!important}
