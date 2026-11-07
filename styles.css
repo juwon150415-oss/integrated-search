@@ -174,3 +174,9 @@ footer{display:none!important}
  .history-section{padding-top:4px}
  .history-list{max-height:23px}
 }
+
+/* Keep a tiny title instead of hiding it in compact mode. */
+.hero{padding-top:8px;padding-bottom:5px}
+h1{display:block!important;font-size:17px!important;line-height:1.1;letter-spacing:-.4px;margin:0 0 5px!important;font-weight:650}
+h1 br{display:none}
+@media(max-height:560px){h1{display:block!important;font-size:15px!important;margin-bottom:3px!important}}
