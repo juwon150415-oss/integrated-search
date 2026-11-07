@@ -26,6 +26,7 @@
         <button class="engine active" type="button" data-engine="google"><span class="engine-dot"></span>Google</button>
         <button class="engine" type="button" data-engine="naver"><span class="engine-dot"></span>네이버</button>
         <button class="engine" type="button" data-engine="namu"><span class="engine-dot"></span>나무위키</button>
+        <button class="engine" type="button" data-engine="custom"><span class="engine-dot"></span><span id="custom-engine-label">내 검색</span></button>
       </div>
 
       <div class="search-wrap">
@@ -67,8 +68,16 @@
       <div class="setting-group">
         <h3>기본 검색 엔진</h3>
         <select id="default-engine" class="setting-select">
-          <option value="google">Google</option><option value="naver">네이버</option><option value="namu">나무위키</option>
+          <option value="google">Google</option><option value="naver">네이버</option><option value="namu">나무위키</option><option value="custom">사용자 지정 검색</option>
         </select>
+      </div>
+      <div class="setting-group">
+        <h3>사용자 지정 검색 링크</h3>
+        <label class="field-label" for="custom-name">검색 버튼 이름</label>
+        <input id="custom-name" class="setting-input" type="text" maxlength="16" placeholder="예: 위키백과">
+        <label class="field-label" for="custom-url">검색 URL 템플릿</label>
+        <input id="custom-url" class="setting-input" type="url" inputmode="url" placeholder="https://example.com/search?q={query}">
+        <p class="setting-help">검색어가 들어갈 위치에 <code>{query}</code> 또는 <code>%s</code>를 넣으세요. 예: https://www.google.com/search?q={query}</p>
       </div>
       <div class="setting-group">
         <h3>검색 동작</h3>
