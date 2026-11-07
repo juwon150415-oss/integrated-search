@@ -12,8 +12,8 @@ let history=safeRead(KEYS.history,oldHistory);if(!Array.isArray(history))history
 history=history.filter(x=>typeof x==="string").slice(0,30);
 let activeIndex=-1,currentItems=[];
 const query=$("#query"),suggestions=$("#suggestions");
-const saveSettings=()=>localStorage.setItem(KEYS.settings,JSON.stringify(settings));
-const normalize=s=>String(s).toLocaleLowerCase().replace(/[\\s\\p{P}\\p{S}]/gu,"");
+const normalize=s=>String(s).toLocaleLowerCase().replace(/[\s\p{P}\p{S}]/gu,"");
+function initials(s){const cho=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];return [...String(s)].map(ch=>{const n=ch.charCodeAt(0)-44032;return n>=0&&n<=11171?cho[Math.floor(n/588)]:ch}).join("")}
 function initials(s){return [...String(s)].map(ch=>{const n=ch.charCodeAt(0)-44032;return n>=0&&n<=11171?String.fromCharCode(4352+Math.floor(n/588)):ch}).join("")}
 function applyTheme(){const theme=settings.theme==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):settings.theme;document.documentElement.dataset.theme=theme;document.querySelector('meta[name="theme-color"]').content=theme==="dark"?"#0b1020":"#f4f7fc"}
 function setEngine(engine){settings.engine=engine;saveSettings();document.querySelectorAll(".engine").forEach(b=>b.classList.toggle("active",b.dataset.engine===engine))}
