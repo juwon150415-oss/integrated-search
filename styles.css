@@ -346,3 +346,80 @@ footer{display:flex!important;margin-top:23px;font-size:10px}
   .help-section summary{flex-direction:row;align-items:center}
   footer{flex-direction:column;gap:5px;text-align:center}
 }
+
+
+/* Minimal design pass: simplify appearance only; keep every section and control visible. */
+:root{
+  --shadow:none;
+}
+body{
+  background:var(--bg);
+  padding:16px 16px 28px;
+}
+.app{width:min(100%,720px)}
+.topbar{height:42px;min-height:42px}
+.brand{font-size:15px;font-weight:750;gap:8px}
+.brand-mark{width:29px;height:29px;border-radius:8px;font-size:21px}
+.brand-badge{display:none}
+.icon-button{width:36px;height:36px;border-radius:8px;background:transparent}
+.hero{padding:30px 0 22px}
+.eyebrow{font-size:9px;letter-spacing:1.5px}
+h1{font-size:clamp(27px,5vw,38px)!important;letter-spacing:-1.2px;margin:9px 0 6px!important}
+.subtitle{font-size:12px}
+.search-card{
+  width:min(100%,640px);margin:19px auto 0;padding:14px;
+  border:1px solid var(--border);border-radius:12px;
+  background:var(--panel);box-shadow:none
+}
+.engine-label{font-size:10px;margin:0 0 5px 1px}
+.engine-select-wrap{margin-bottom:8px}
+.engine-select{height:40px;min-height:40px;border-radius:8px;font-size:12px}
+.search-form{min-height:47px;padding:4px 6px 4px 10px;border-radius:9px;gap:6px}
+.search-form input{font-size:14px;padding:8px 2px}
+.search-icon{font-size:21px}
+.search-button,.save-button{border-radius:7px;padding:10px 13px;font-size:11px}
+.keyboard-hint{font-size:10px;margin:7px 2px 0}
+.feature-points{gap:12px;margin-top:12px;font-size:10px}
+.history-section{margin-top:8px;padding-top:14px}
+.section-heading{margin-bottom:8px}
+.section-heading h2{font-size:16px}
+.section-kicker{font-size:8px;letter-spacing:1.3px}
+.history-list{gap:6px;min-height:30px}
+.history-chip{padding:7px 9px;border-radius:7px;font-size:10px;background:transparent}
+.empty-history{font-size:11px;padding:6px 0}
+.help-section{
+  margin-top:17px;padding:12px 13px;border-radius:10px;
+  background:transparent;box-shadow:none
+}
+.help-section summary{font-size:12px}
+.help-summary-sub{font-size:10px}
+.help-description{font-size:11px;margin:9px 0 12px}
+.help-category+.help-category{margin-top:12px}
+.help-category h3{font-size:10px;margin-bottom:6px}
+.help-links{gap:6px}
+.help-links a{font-size:10px;padding:6px 9px;border-radius:6px}
+footer{margin-top:16px;font-size:9px}
+.suggestions{border-radius:9px;box-shadow:0 8px 24px #0002}
+.suggestion-item{padding:8px 9px;border-radius:6px}
+.settings-panel{border-radius:12px;box-shadow:none;padding:18px}
+.settings-header{margin-bottom:14px}
+.setting-group{padding:13px 0}
+.choice-row button,.setting-select,.privacy-note{border-radius:7px}
+@media(max-width:520px){
+  body{padding:10px 12px 20px}
+  .topbar{height:38px;min-height:38px}
+  .hero{padding:23px 0 16px}
+  h1{font-size:28px!important;margin:8px 0 5px!important}
+  .subtitle{font-size:11px}
+  .search-card{margin-top:14px;padding:11px;border-radius:10px}
+  .engine-select{height:38px;min-height:38px}
+  .search-form{min-height:44px}
+  .search-form input{font-size:13px}
+  .enter-hint{display:none}
+  .search-button{padding:9px 11px}
+  .feature-points{gap:8px;font-size:9px}
+  .history-section{padding-top:12px}
+  .help-section{margin-top:14px;padding:11px}
+  .help-section summary{flex-direction:row;align-items:center}
+  footer{gap:5px}
+}
