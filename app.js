@@ -3,7 +3,7 @@
 const $=s=>document.querySelector(s);
 const KEYS={settings:"is-settings-v3",history:"is-history-v3"};
 const ENGINES=["google","naver","namu","chatgpt"];
-const defaults={theme:"dark",engine:"google",newTab:false,autocomplete:true,remoteAutocomplete:true,historySuggestions:true,suggestionCount:8};
+const defaults={theme:"light",engine:"google",newTab:false,autocomplete:true,remoteAutocomplete:true,historySuggestions:true,suggestionCount:8,colors:{accent:"#315fd3",background:"#f7f8fa",surface:"#ffffff"}};
 const endpoints={
  google:q=>"https://www.google.com/search?q="+encodeURIComponent(q),
  naver:q=>"https://search.naver.com/search.naver?query="+encodeURIComponent(q),
@@ -26,6 +26,11 @@ function saveHistory(){safeWrite(KEYS.history,history)}
 function applyTheme(){
  const chosen=settings.theme==="system"?(window.matchMedia?.("(prefers-color-scheme: dark)").matches?"dark":"light"):settings.theme;
  document.documentElement.dataset.theme=chosen;
+ const colors=settings.colors||defaults.colors;
+ const root=document.documentElement;
+ root.style.setProperty("--user-accent",colors.accent||defaults.colors.accent);
+ root.style.setProperty("--user-bg",colors.background||defaults.colors.background);
+ root.style.setProperty("--user-panel",colors.surface||defaults.colors.surface);
  const meta=$('meta[name="theme-color"]');if(meta)meta.content=chosen==="dark"?"#0b1020":"#f4f7fc";
 }
 function setEngine(engine,persist=true){
@@ -158,12 +163,15 @@ function syncSettingsForm(){
  $("#remote-autocomplete").checked=!!settings.remoteAutocomplete;
  $("#history-suggestions").checked=!!settings.historySuggestions;
  $("#suggestion-count").value=String(settings.suggestionCount);
+ const colors={...defaults.colors,...(settings.colors||{})};
+ $("#color-accent").value=colors.accent;$("#color-background").value=colors.background;$("#color-surface").value=colors.surface;
  document.querySelectorAll("[data-theme]").forEach(button=>button.classList.toggle("active",button.dataset.theme===settings.theme));
 }
 function openSettings(){syncSettingsForm();$("#settings-modal").hidden=false;$("#settings-close").focus()}
 function closeSettings(){$("#settings-modal").hidden=true;$("#settings-open").focus()}
 function readSettingsForm(){
  settings={...settings,engine:$("#default-engine").value,newTab:$("#new-tab").checked,autocomplete:$("#autocomplete").checked,remoteAutocomplete:$("#remote-autocomplete").checked,historySuggestions:$("#history-suggestions").checked,suggestionCount:Number($("#suggestion-count").value)};
+ settings.colors={accent:$("#color-accent").value,background:$("#color-background").value,surface:$("#color-surface").value};
  saveSettings();setEngine(settings.engine,false);applyTheme();scheduleSuggestions();return true;
 }
 $("#engine-select").addEventListener("change",event=>setEngine(event.target.value));
@@ -184,6 +192,16 @@ $("#settings-close").addEventListener("click",closeSettings);
 $("#settings-done").addEventListener("click",()=>{readSettingsForm();closeSettings()});
 $("#settings-modal").addEventListener("click",event=>{if(event.target===$("#settings-modal"))closeSettings()});
 document.querySelectorAll("[data-theme]").forEach(button=>button.addEventListener("click",()=>{settings.theme=button.dataset.theme;applyTheme();document.querySelectorAll("[data-theme]").forEach(x=>x.classList.toggle("active",x===button))}));
+$("#reset-colors").addEventListener("click",()=>{
+ settings.colors={...defaults.colors};
+ $("#color-accent").value=defaults.colors.accent;$("#color-background").value=defaults.colors.background;$("#color-surface").value=defaults.colors.surface;
+ applyTheme();
+});
+[event("#color-accent"),event("#color-background"),event("#color-surface")].forEach(()=>{});
+function event(selector){$(selector).addEventListener("input",()=>{
+ const colors={accent:$("#color-accent").value,background:$("#color-background").value,surface:$("#color-surface").value};
+ settings.colors=colors;applyTheme();
+})}
 $("#reset-settings").addEventListener("click",()=>{settings={...defaults};saveSettings();syncSettingsForm();applyTheme();setEngine(settings.engine,false);scheduleSuggestions()});
 document.querySelector(".help-links").addEventListener("click",event=>{
  const link=event.target.closest("a[data-help-url]");if(!link)return;event.preventDefault();
