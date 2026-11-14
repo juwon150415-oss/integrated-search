@@ -82,7 +82,7 @@ async function fetchWithTimeout(url,signal,timeout=2600){
 async function fetchRemoteSuggestions(term,signal){
  const key=normalize(term);if(apiCache.has(key))return apiCache.get(key);
  const encoded=encodeURIComponent(term);
- const googleUrl="https://suggestqueries.google.com/complete/search?client=firefox&hl=ko&q="+encoded;
+ const googleUrl="https://suggestqueries.google.com/complete/search?client=firefox&hl=ko&gl=kr&q="+encoded;
  const ddgUrl="https://duckduckgo.com/ac/?q="+encoded+"&type=list";
  const tasks=[
   fetchWithTimeout(googleUrl,signal).then(data=>(Array.isArray(data?.[1])?data[1]:[]).map(x=>String(x))).catch(()=>[]),
@@ -94,8 +94,16 @@ async function fetchRemoteSuggestions(term,signal){
  return merged;
 }
 function mergeSuggestions(local,remote){
- const result=[...local],seen=new Set(local.map(x=>normalize(x.term)));
- remote.forEach((term,index)=>{const key=normalize(term);if(!key||seen.has(key))return;seen.add(key);result.push({term,type:"실시간 추천",reason:"검색 추천 API",score:20+index})});
+ // API 추천어를 먼저 보여 주고, 부족한 경우에만 기기 내 추천어로 보충
+ const result=[],seen=new Set();
+ remote.forEach((term,index)=>{
+  const key=normalize(term);if(!key||seen.has(key))return;
+  seen.add(key);result.push({term,type:"실시간 추천",reason:"검색 추천 API",score:index});
+ });
+ local.forEach(item=>{
+  const key=normalize(item.term);if(!key||seen.has(key))return;
+  seen.add(key);result.push(item);
+ });
  return result.slice(0,settings.suggestionCount);
 }
 function renderSuggestionList(items,label){
