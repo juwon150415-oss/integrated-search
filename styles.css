@@ -724,3 +724,10 @@ body{
   .help-section summary{flex-direction:row;align-items:center}
   .settings-panel{padding:16px}
 }
+
+/* User-adjustable palette */
+:root{--accent:var(--user-accent,#315fd3);--bg:var(--user-bg,#f7f8fa);--panel:var(--user-panel,#fff)}
+:root[data-theme="dark"]{--bg:var(--user-bg,#15171b);--panel:var(--user-panel,#1d2025)}
+.color-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 0;color:var(--text);font-size:12px}
+.color-row input[type="color"]{width:42px;height:30px;padding:2px;border:1px solid var(--border);border-radius:6px;background:var(--panel);cursor:pointer}
+.color-settings .reset-button{margin-top:8px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text)}
