@@ -174,7 +174,7 @@ function syncSettingsForm(){
 function openSettings(){syncSettingsForm();$("#settings-modal").hidden=false;$("#settings-close").focus()}
 function closeSettings(){$("#settings-modal").hidden=true;$("#settings-open").focus()}
 function readSettingsForm(){
- settings={...settings,accentColor:$("#accent-color").value,backgroundColor:$("#background-color").value,engine:$("#default-engine").value,newTab:$("#new-tab").checked,autocomplete:$("#autocomplete").checked,remoteAutocomplete:$("#remote-autocomplete").checked,historySuggestions:$("#history-suggestions").checked,suggestionCount:Number($("#suggestion-count").value)};
+ settings={...settings,engine:$("#default-engine").value,newTab:$("#new-tab").checked,autocomplete:$("#autocomplete").checked,remoteAutocomplete:$("#remote-autocomplete").checked,historySuggestions:$("#history-suggestions").checked,suggestionCount:Number($("#suggestion-count").value)};
  settings.colors={accent:$("#color-accent").value,background:$("#color-background").value,surface:$("#color-surface").value};
  saveSettings();setEngine(settings.engine,false);applyTheme();scheduleSuggestions();return true;
 }
