@@ -33,7 +33,7 @@ function applyTheme(){
  root.style.setProperty("--bg",colors.background);
  root.style.setProperty("--panel",colors.surface);
  root.style.setProperty("--panel2",colors.background);
- const meta=$('meta[name="theme-color"]');if(meta)meta.content=chosen==="dark"?"#0b1020":"#f4f7fc";
+ const meta=$('meta[name="theme-color"]');if(meta)meta.content=chosen==="dark"?colors.background:colors.background;
 }
 function setEngine(engine,persist=true){
  settings.engine=ENGINES.includes(engine)?engine:"google";
@@ -165,8 +165,6 @@ function syncSettingsForm(){
  $("#remote-autocomplete").checked=!!settings.remoteAutocomplete;
  $("#history-suggestions").checked=!!settings.historySuggestions;
  $("#suggestion-count").value=String(settings.suggestionCount);
- $("#accent-color").value=settings.accentColor||defaults.accentColor;
- $("#background-color").value=settings.backgroundColor||defaults.backgroundColor;
  const colors={...defaults.colors,...(settings.colors||{})};
  $("#color-accent").value=colors.accent;$("#color-background").value=colors.background;$("#color-surface").value=colors.surface;
  document.querySelectorAll("[data-theme]").forEach(button=>button.classList.toggle("active",button.dataset.theme===settings.theme));
@@ -196,19 +194,12 @@ $("#settings-close").addEventListener("click",closeSettings);
 $("#settings-done").addEventListener("click",()=>{readSettingsForm();closeSettings()});
 $("#settings-modal").addEventListener("click",event=>{if(event.target===$("#settings-modal"))closeSettings()});
 document.querySelectorAll("[data-theme]").forEach(button=>button.addEventListener("click",()=>{settings.theme=button.dataset.theme;applyTheme();document.querySelectorAll("[data-theme]").forEach(x=>x.classList.toggle("active",x===button))}));
-$("#reset-colors").addEventListener("click",()=>{
- settings.colors={...defaults.colors};
- $("#color-accent").value=defaults.colors.accent;$("#color-background").value=defaults.colors.background;$("#color-surface").value=defaults.colors.surface;
+["color-accent","color-background","color-surface"].forEach(id=>$("#"+id).addEventListener("input",()=>{
+ settings.colors={accent:$("#color-accent").value,background:$("#color-background").value,surface:$("#color-surface").value};
  applyTheme();
-});
-[event("#color-accent"),event("#color-background"),event("#color-surface")].forEach(()=>{});
-function event(selector){$(selector).addEventListener("input",()=>{
- const colors={accent:$("#color-accent").value,background:$("#color-background").value,surface:$("#color-surface").value};
- settings.colors=colors;applyTheme();
-})}
+}));
 $("#reset-settings").addEventListener("click",()=>{settings={...defaults};saveSettings();syncSettingsForm();applyTheme();setEngine(settings.engine,false);scheduleSuggestions()});
 $("#reset-colors").addEventListener("click",()=>{settings.colors={...defaults.colors};syncSettingsForm();applyTheme();saveSettings()});
-["color-accent","color-background","color-surface"].forEach(id=>$("#"+id).addEventListener("input",()=>{settings.colors={accent:$("#color-accent").value,background:$("#color-background").value,surface:$("#color-surface").value};applyTheme()}));
 document.querySelector(".help-links").addEventListener("click",event=>{
  const link=event.target.closest("a[data-help-url]");if(!link)return;event.preventDefault();
  const term=query.value.trim();if(!term){query.focus();status.textContent="먼저 검색창에 검색어를 입력해 주세요.";return}
