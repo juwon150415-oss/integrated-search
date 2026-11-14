@@ -26,11 +26,13 @@ function saveHistory(){safeWrite(KEYS.history,history)}
 function applyTheme(){
  const chosen=settings.theme==="system"?(window.matchMedia?.("(prefers-color-scheme: dark)").matches?"dark":"light"):settings.theme;
  document.documentElement.dataset.theme=chosen;
- const colors=settings.colors||defaults.colors;
+ const colors={...defaults.colors,...(settings.colors||{})};
  const root=document.documentElement;
- root.style.setProperty("--user-accent",colors.accent||defaults.colors.accent);
- root.style.setProperty("--user-bg",colors.background||defaults.colors.background);
- root.style.setProperty("--user-panel",colors.surface||defaults.colors.surface);
+ root.style.setProperty("--accent",colors.accent);
+ root.style.setProperty("--accent-soft",colors.accent+"20");
+ root.style.setProperty("--bg",colors.background);
+ root.style.setProperty("--panel",colors.surface);
+ root.style.setProperty("--panel2",colors.background);
  const meta=$('meta[name="theme-color"]');if(meta)meta.content=chosen==="dark"?"#0b1020":"#f4f7fc";
 }
 function setEngine(engine,persist=true){
@@ -205,8 +207,8 @@ function event(selector){$(selector).addEventListener("input",()=>{
  settings.colors=colors;applyTheme();
 })}
 $("#reset-settings").addEventListener("click",()=>{settings={...defaults};saveSettings();syncSettingsForm();applyTheme();setEngine(settings.engine,false);scheduleSuggestions()});
-$("#reset-colors").addEventListener("click",()=>{$("#accent-color").value=defaults.accentColor;$("#background-color").value=defaults.backgroundColor;settings.accentColor=defaults.accentColor;settings.backgroundColor=defaults.backgroundColor;applyTheme();saveSettings()});
-["accent-color","background-color"].forEach(id=>$("#"+id).addEventListener("input",()=>{settings.accentColor=$("#accent-color").value;settings.backgroundColor=$("#background-color").value;applyTheme()}));
+$("#reset-colors").addEventListener("click",()=>{settings.colors={...defaults.colors};syncSettingsForm();applyTheme();saveSettings()});
+["color-accent","color-background","color-surface"].forEach(id=>$("#"+id).addEventListener("input",()=>{settings.colors={accent:$("#color-accent").value,background:$("#color-background").value,surface:$("#color-surface").value};applyTheme()}));
 document.querySelector(".help-links").addEventListener("click",event=>{
  const link=event.target.closest("a[data-help-url]");if(!link)return;event.preventDefault();
  const term=query.value.trim();if(!term){query.focus();status.textContent="먼저 검색창에 검색어를 입력해 주세요.";return}
