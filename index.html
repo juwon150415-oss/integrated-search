@@ -89,10 +89,16 @@
       <div class="setting-group">
         <h3>화면 테마</h3>
         <div class="choice-row" id="theme-options">
-          <button type="button" data-theme="dark">어둡게</button>
           <button type="button" data-theme="light">밝게</button>
+          <button type="button" data-theme="dark">어둡게</button>
           <button type="button" data-theme="system">기기 설정</button>
         </div>
+      </div>
+      <div class="setting-group color-settings">
+        <h3>색상 조정</h3>
+        <label class="color-row"><span>강조 색상</span><input id="accent-color" type="color" value="#315fd3"></label>
+        <label class="color-row"><span>배경 색상</span><input id="background-color" type="color" value="#f7f8fa"></label>
+        <button class="reset-colors" id="reset-colors" type="button">색상 기본값으로</button>
       </div>
       <div class="setting-group">
         <h3>기본 검색 방법</h3>
