@@ -163,6 +163,8 @@ function syncSettingsForm(){
  $("#remote-autocomplete").checked=!!settings.remoteAutocomplete;
  $("#history-suggestions").checked=!!settings.historySuggestions;
  $("#suggestion-count").value=String(settings.suggestionCount);
+ $("#accent-color").value=settings.accentColor||defaults.accentColor;
+ $("#background-color").value=settings.backgroundColor||defaults.backgroundColor;
  const colors={...defaults.colors,...(settings.colors||{})};
  $("#color-accent").value=colors.accent;$("#color-background").value=colors.background;$("#color-surface").value=colors.surface;
  document.querySelectorAll("[data-theme]").forEach(button=>button.classList.toggle("active",button.dataset.theme===settings.theme));
@@ -170,7 +172,7 @@ function syncSettingsForm(){
 function openSettings(){syncSettingsForm();$("#settings-modal").hidden=false;$("#settings-close").focus()}
 function closeSettings(){$("#settings-modal").hidden=true;$("#settings-open").focus()}
 function readSettingsForm(){
- settings={...settings,engine:$("#default-engine").value,newTab:$("#new-tab").checked,autocomplete:$("#autocomplete").checked,remoteAutocomplete:$("#remote-autocomplete").checked,historySuggestions:$("#history-suggestions").checked,suggestionCount:Number($("#suggestion-count").value)};
+ settings={...settings,accentColor:$("#accent-color").value,backgroundColor:$("#background-color").value,engine:$("#default-engine").value,newTab:$("#new-tab").checked,autocomplete:$("#autocomplete").checked,remoteAutocomplete:$("#remote-autocomplete").checked,historySuggestions:$("#history-suggestions").checked,suggestionCount:Number($("#suggestion-count").value)};
  settings.colors={accent:$("#color-accent").value,background:$("#color-background").value,surface:$("#color-surface").value};
  saveSettings();setEngine(settings.engine,false);applyTheme();scheduleSuggestions();return true;
 }
@@ -203,6 +205,8 @@ function event(selector){$(selector).addEventListener("input",()=>{
  settings.colors=colors;applyTheme();
 })}
 $("#reset-settings").addEventListener("click",()=>{settings={...defaults};saveSettings();syncSettingsForm();applyTheme();setEngine(settings.engine,false);scheduleSuggestions()});
+$("#reset-colors").addEventListener("click",()=>{$("#accent-color").value=defaults.accentColor;$("#background-color").value=defaults.backgroundColor;settings.accentColor=defaults.accentColor;settings.backgroundColor=defaults.backgroundColor;applyTheme();saveSettings()});
+["accent-color","background-color"].forEach(id=>$("#"+id).addEventListener("input",()=>{settings.accentColor=$("#accent-color").value;settings.backgroundColor=$("#background-color").value;applyTheme()}));
 document.querySelector(".help-links").addEventListener("click",event=>{
  const link=event.target.closest("a[data-help-url]");if(!link)return;event.preventDefault();
  const term=query.value.trim();if(!term){query.focus();status.textContent="먼저 검색창에 검색어를 입력해 주세요.";return}
