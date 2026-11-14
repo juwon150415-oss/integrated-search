@@ -15,19 +15,13 @@
 <body>
   <main class="app">
     <header class="topbar">
-      <a class="brand" href="./" aria-label="통합 검색 홈"><span class="brand-mark">⌕</span><span>통합 검색</span><span class="brand-badge">BETA</span></a>
       <button class="icon-button" id="settings-open" type="button" aria-label="검색 설정 열기" title="검색 설정">⚙</button>
     </header>
 
     <section class="hero">
-      <div class="eyebrow">ONE SEARCH · MANY DESTINATIONS</div>
-      <h1>원하는 정보를 <span>한 번에</span></h1>
-      <p class="subtitle">검색 방법을 선택하고 빠르게 찾아보세요.</p>
-
       <section class="search-card" aria-label="통합 검색">
         <label class="engine-label" for="engine-select">검색 방법</label>
         <div class="engine-select-wrap">
-          <span class="engine-select-icon" aria-hidden="true">◎</span>
           <select id="engine-select" class="engine-select" aria-label="검색 방법 선택">
             <option value="google">Google 검색</option>
             <option value="naver">네이버 검색</option>
@@ -38,30 +32,28 @@
         </div>
         <div class="search-wrap">
           <form class="search-form" id="search-form" role="search">
-            <span class="search-icon" aria-hidden="true">⌕</span>
             <input id="query" type="search" placeholder="무엇이 궁금하신가요?" autocomplete="off" spellcheck="false" aria-label="검색어" aria-controls="suggestions" aria-expanded="false">
             <button class="clear-input" id="clear-query" type="button" aria-label="검색어 지우기" hidden>×</button>
             <kbd class="enter-hint">Enter ↵</kbd>
-            <button class="search-button" type="submit">검색 <span>→</span></button>
+            <button class="search-button" type="submit">검색</button>
           </form>
           <div class="suggestions" id="suggestions" role="listbox" aria-label="자동완성 추천" hidden></div>
           <div class="autocomplete-status" id="autocomplete-status" aria-live="polite"></div>
         </div>
         <p class="keyboard-hint">↑ ↓ 추천어 이동 <span>·</span> Enter 검색 <span>·</span> Esc 닫기</p>
       </section>
-      <div class="feature-points"><span>✦ 실시간 자동완성</span><span>◷ 최근 검색 저장</span><span>⌘ 여러 검색 서비스</span></div>
     </section>
 
     <section class="history-section">
       <div class="section-heading">
-        <div><span class="section-kicker">YOUR ACTIVITY</span><h2>최근 검색</h2></div>
+        <div><h2>최근 검색</h2></div>
         <button class="text-button" id="clear-history" type="button">전체 삭제</button>
       </div>
       <div class="history-list" id="history-list" aria-live="polite"></div>
     </section>
 
     <details class="help-section">
-      <summary><span>도움말</span><span class="help-summary-sub">자주 쓰는 사이트 바로 검색</span></summary>
+      <summary>도움말</summary>
       <p class="help-description">검색창에 검색어를 입력한 다음 원하는 사이트를 선택하세요.</p>
       <div class="help-category"><h3>검색·지식</h3><div class="help-links">
         <a href="#" data-help-url="https://www.google.com/search?q={query}">Google</a>
@@ -86,13 +78,12 @@
       </div></div>
     </details>
 
-    <footer><span>통합 검색</span><span>검색 기록과 설정은 이 브라우저에 저장됩니다.</span></footer>
   </main>
 
   <div class="modal-backdrop" id="settings-modal" hidden>
     <section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
       <div class="settings-header">
-        <div><span class="section-kicker">PERSONALIZE</span><h2 id="settings-title">검색 설정</h2></div>
+        <div><h2 id="settings-title">검색 설정</h2></div>
         <button class="icon-button" id="settings-close" type="button" aria-label="설정 닫기">✕</button>
       </div>
       <div class="setting-group">
