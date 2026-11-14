@@ -423,3 +423,167 @@ footer{margin-top:16px;font-size:9px}
   .help-section summary{flex-direction:row;align-items:center}
   footer{gap:5px}
 }
+
+
+/* Refined visual system: restrained color, clear hierarchy, no decorative clutter. */
+:root{
+  --bg:#f7f8fa;
+  --panel:#ffffff;
+  --panel2:#f1f3f6;
+  --text:#20242c;
+  --muted:#737b88;
+  --border:#e3e6eb;
+  --accent:#526b9a;
+  --accent-soft:#edf1f7;
+  --shadow:0 1px 2px #17203308;
+}
+:root[data-theme="dark"]{
+  --bg:#15171b;
+  --panel:#1d2026;
+  --panel2:#262a32;
+  --text:#eceef2;
+  --muted:#a0a6b1;
+  --border:#343943;
+  --accent:#a8b9dc;
+  --accent-soft:#292f3b;
+  --shadow:none;
+}
+body{
+  background:var(--bg);
+  color:var(--text);
+  padding:20px 18px 34px;
+  transition:background .18s,color .18s;
+}
+.app{width:min(100%,700px)}
+.topbar{height:44px;min-height:44px}
+.brand{font-size:15px;font-weight:700;letter-spacing:-.25px;gap:9px}
+.brand-mark{
+  width:29px;height:29px;border-radius:8px;
+  background:var(--panel2);color:var(--accent);font-size:21px
+}
+.brand-badge{display:none}
+.icon-button{
+  width:36px;height:36px;border:1px solid var(--border);
+  border-radius:9px;background:var(--panel);font-size:16px
+}
+.hero{padding:36px 0 25px}
+.eyebrow,.section-kicker{color:var(--muted);font-size:9px;letter-spacing:1.5px;font-weight:700}
+h1{
+  color:var(--text);font-size:clamp(28px,5vw,39px)!important;
+  font-weight:720;letter-spacing:-1.5px;line-height:1.2;
+  margin:10px 0 7px!important
+}
+h1 span{color:var(--accent)}
+.subtitle{font-size:13px;color:var(--muted)}
+.search-card{
+  width:min(100%,620px);margin:22px auto 0;padding:16px;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:13px;box-shadow:var(--shadow)
+}
+.engine-label{font-size:11px;font-weight:650;color:var(--muted);margin:0 0 7px 2px}
+.engine-select-wrap{margin-bottom:10px}
+.engine-select{
+  height:43px;min-height:43px;border:1px solid var(--border);
+  border-radius:8px;background:var(--panel2);font-size:13px;
+  font-weight:600;padding-left:40px
+}
+.engine-select-icon{display:block;top:10px;color:var(--muted)}
+.select-chevron{top:10px}
+.search-form{
+  min-height:51px;padding:5px 6px 5px 12px;gap:7px;
+  border:1px solid var(--border);border-radius:9px;background:var(--bg);
+  box-shadow:none
+}
+.search-form:focus-within{
+  border-color:var(--accent);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 13%,transparent)
+}
+.search-icon{font-size:21px;color:var(--muted)}
+.search-form input{font-size:14px;padding:9px 2px}
+.search-form input::placeholder{color:var(--muted)}
+.enter-hint{font-size:10px;border-color:var(--border);border-radius:5px}
+.search-button,.save-button{
+  background:var(--text);color:var(--bg);border-radius:7px;
+  font-size:12px;font-weight:650;padding:10px 14px
+}
+.search-button:hover,.save-button:hover{filter:opacity(.86)}
+.keyboard-hint{font-size:10px;color:var(--muted);margin:9px 2px 0}
+.keyboard-hint span{color:var(--muted)}
+.feature-points{gap:14px;margin-top:14px;font-size:10px;color:var(--muted)}
+.history-section{margin-top:9px;padding-top:18px;border-top:1px solid var(--border)}
+.section-heading{margin-bottom:10px}
+.section-heading h2{font-size:17px;font-weight:700;letter-spacing:-.35px}
+.text-button,.reset-button{font-size:11px;color:var(--muted)}
+.history-list{gap:7px;min-height:32px}
+.history-chip{
+  padding:7px 10px;border:1px solid var(--border);border-radius:7px;
+  background:var(--panel);font-size:11px
+}
+.history-chip:hover{border-color:var(--accent);background:var(--accent-soft)}
+.empty-history{font-size:11px;color:var(--muted)}
+.help-section{
+  margin-top:19px;padding:13px 14px;border:1px solid var(--border);
+  border-radius:11px;background:var(--panel)
+}
+.help-section summary{font-size:13px;font-weight:700}
+.help-summary-sub{font-size:10px;color:var(--muted)}
+.help-description{font-size:11px;color:var(--muted);margin:10px 0 13px}
+.help-category+.help-category{margin-top:13px}
+.help-category h3{font-size:10px;color:var(--muted);font-weight:650;margin-bottom:7px}
+.help-links{gap:6px}
+.help-links a{
+  padding:7px 10px;border:1px solid var(--border);border-radius:6px;
+  background:transparent;color:var(--text);font-size:10px
+}
+.help-links a:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+footer{margin-top:18px;font-size:9px;color:var(--muted)}
+.suggestions{
+  border:1px solid var(--border);border-radius:10px;
+  background:var(--panel);box-shadow:0 10px 28px #10182818
+}
+:root[data-theme="dark"] .suggestions{box-shadow:0 10px 28px #0005}
+.suggestion-heading{font-size:10px}
+.suggestion-item{padding:9px 10px;border-radius:6px}
+.suggestion-item:hover,.suggestion-item.selected{background:var(--accent-soft)}
+.suggestion-symbol,.suggestion-reason{color:var(--accent)}
+.suggestion-type{background:var(--panel2);border-radius:4px}
+.autocomplete-status{font-size:10px}
+.modal-backdrop{background:#10182866;backdrop-filter:blur(3px)}
+.settings-panel{
+  border:1px solid var(--border);border-radius:14px;
+  background:var(--panel);box-shadow:0 18px 55px #10182822;padding:20px
+}
+.settings-header{margin-bottom:16px}
+.settings-header h2{font-size:19px;font-weight:700}
+.setting-group{padding:14px 0}
+.setting-group h3{font-size:11px;font-weight:650}
+.choice-row button,.setting-select{
+  border-radius:7px;background:var(--panel2);font-size:11px
+}
+.choice-row button.active{border-color:var(--accent);background:var(--accent-soft)}
+.switch-row strong{font-size:11px}
+.switch-row small{font-size:10px}
+.switch{width:38px;height:22px}
+.switch:after{width:16px;height:16px}
+.switch-row input:checked+.switch:after{transform:translateX(16px)}
+.privacy-note{background:var(--panel2);border-radius:7px;font-size:10px}
+.settings-footer{padding-top:14px;margin-top:14px}
+.reset-button,.save-button{font-size:11px}
+@media(max-width:520px){
+  body{padding:12px 13px 22px}
+  .topbar{height:38px;min-height:38px}
+  .hero{padding:25px 0 17px}
+  h1{font-size:29px!important;letter-spacing:-1px;margin:8px 0 5px!important}
+  .subtitle{font-size:11px}
+  .search-card{margin-top:15px;padding:12px;border-radius:11px}
+  .engine-select{height:40px;min-height:40px}
+  .search-form{min-height:46px;padding-left:9px;gap:5px}
+  .search-form input{font-size:13px}
+  .enter-hint{display:none}
+  .search-button{padding:9px 11px;font-size:11px}
+  .feature-points{gap:9px;font-size:9px}
+  .history-section{padding-top:14px}
+  .help-section{margin-top:15px;padding:11px}
+  .help-section summary{flex-direction:row;align-items:center}
+  footer{gap:5px}
+}
